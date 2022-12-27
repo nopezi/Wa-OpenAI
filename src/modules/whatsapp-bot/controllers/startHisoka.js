@@ -1,126 +1,23 @@
-let env = require('./key.json')
+const { default: sansekaiConnect, useSingleFileAuthState, DisconnectReason, fetchLatestBaileysVersion, generateForwardMessageContent, prepareWAMessageMedia, generateWAMessageFromContent, generateMessageID, downloadContentFromMessage, makeInMemoryStore, jidDecode, proto, getContentType } = require("@adiwajshing/baileys")
+const pino = require('pino')
+const figlet = require('figlet')
 
-require("http").createServer((_, res) => res.end("Berjalan coy")).listen(env.po)
+const { Boom } = require('@hapi/boom')
+
+const smsg = require('./smsg.js')
+const color = require('./color.js')
 
 const sessionName = 'yusril'
 const donet = 'https://saweria.co/sansekai'
 const owner = ['6287878817169']
-const { default: sansekaiConnect, useSingleFileAuthState, DisconnectReason, fetchLatestBaileysVersion, generateForwardMessageContent, prepareWAMessageMedia, generateWAMessageFromContent, generateMessageID, downloadContentFromMessage, makeInMemoryStore, jidDecode, proto, getContentType } = require("@adiwajshing/baileys")
-const { state, saveState } = useSingleFileAuthState(`./${sessionName}.json`)
-const pino = require('pino')
-const { Boom } = require('@hapi/boom')
-const fs = require('fs')
-const chalk = require('chalk')
-const figlet = require('figlet')
-const _ = require('lodash')
-const PhoneNumber = require('awesome-phonenumber')
 
 const store = makeInMemoryStore({ logger: pino().child({ level: 'silent', stream: 'store' }) })
+const { state, saveState } = useSingleFileAuthState(`./${sessionName}.json`)
 
-const color = (text, color) => {
-    return !color ? chalk.green(text) : chalk.keyword(color)(text)
-}
+const models = require('../models/index.js')
+const cron = require('node-cron');
 
-function smsg(conn, m, store) {
-    if (!m) return m
-    let M = proto.WebMessageInfo
-    if (m.key) {
-        m.id = m.key.id
-        m.isBaileys = m.id.startsWith('BAE5') && m.id.length === 16
-        m.chat = m.key.remoteJid
-        m.fromMe = m.key.fromMe
-        m.isGroup = m.chat.endsWith('@g.us')
-        m.sender = conn.decodeJid(m.fromMe && conn.user.id || m.participant || m.key.participant || m.chat || '')
-        if (m.isGroup) m.participant = conn.decodeJid(m.key.participant) || ''
-    }
-    if (m.message) {
-        m.mtype = getContentType(m.message)
-        m.msg = (m.mtype == 'viewOnceMessage' ? m.message[m.mtype].message[getContentType(m.message[m.mtype].message)] : m.message[m.mtype])
-        m.body = m.message.conversation || m.msg.caption || m.msg.text || (m.mtype == 'listResponseMessage') && m.msg.singleSelectReply.selectedRowId || (m.mtype == 'buttonsResponseMessage') && m.msg.selectedButtonId || (m.mtype == 'viewOnceMessage') && m.msg.caption || m.text
-        let quoted = m.quoted = m.msg.contextInfo ? m.msg.contextInfo.quotedMessage : null
-        m.mentionedJid = m.msg.contextInfo ? m.msg.contextInfo.mentionedJid : []
-        if (m.quoted) {
-            let type = getContentType(quoted)
-			m.quoted = m.quoted[type]
-            if (['productMessage'].includes(type)) {
-				type = getContentType(m.quoted)
-				m.quoted = m.quoted[type]
-			}
-            if (typeof m.quoted === 'string') m.quoted = {
-				text: m.quoted
-			}
-            m.quoted.mtype = type
-            m.quoted.id = m.msg.contextInfo.stanzaId
-			m.quoted.chat = m.msg.contextInfo.remoteJid || m.chat
-            m.quoted.isBaileys = m.quoted.id ? m.quoted.id.startsWith('BAE5') && m.quoted.id.length === 16 : false
-			m.quoted.sender = conn.decodeJid(m.msg.contextInfo.participant)
-			m.quoted.fromMe = m.quoted.sender === conn.decodeJid(conn.user.id)
-            m.quoted.text = m.quoted.text || m.quoted.caption || m.quoted.conversation || m.quoted.contentText || m.quoted.selectedDisplayText || m.quoted.title || ''
-			m.quoted.mentionedJid = m.msg.contextInfo ? m.msg.contextInfo.mentionedJid : []
-            m.getQuotedObj = m.getQuotedMessage = async () => {
-                if (!m.quoted.id) return false
-                let q = await store.loadMessage(m.chat, m.quoted.id, conn)
-                return exports.smsg(conn, q, store)
-            }
-            let vM = m.quoted.fakeObj = M.fromObject({
-                key: {
-                    remoteJid: m.quoted.chat,
-                    fromMe: m.quoted.fromMe,
-                    id: m.quoted.id
-                },
-                message: quoted,
-                ...(m.isGroup ? { participant: m.quoted.sender } : {})
-            })
-
-            /**
-             * 
-             * @returns 
-             */
-            m.quoted.delete = () => conn.sendMessage(m.quoted.chat, { delete: vM.key })
-
-	   /**
-		* 
-		* @param {*} jid 
-		* @param {*} forceForward 
-		* @param {*} options 
-		* @returns 
-	   */
-            m.quoted.copyNForward = (jid, forceForward = false, options = {}) => conn.copyNForward(jid, vM, forceForward, options)
-
-            /**
-              *
-              * @returns
-            */
-            m.quoted.download = () => conn.downloadMediaMessage(m.quoted)
-        }
-    }
-    if (m.msg.url) m.download = () => conn.downloadMediaMessage(m.msg)
-    m.text = m.msg.text || m.msg.caption || m.message.conversation || m.msg.contentText || m.msg.selectedDisplayText || m.msg.title || ''
-    /**
-	* Reply to this message
-	* @param {String|Object} text 
-	* @param {String|false} chatId 
-	* @param {Object} options 
-	*/
-    m.reply = (text, chatId = m.chat, options = {}) => Buffer.isBuffer(text) ? conn.sendMedia(chatId, text, 'file', '', m, { ...options }) : conn.sendText(chatId, text, m, { ...options })
-    /**
-	* Copy this message
-	*/
-	m.copy = () => exports.smsg(conn, M.fromObject(M.toObject(m)))
-
-	/**
-	 * 
-	 * @param {*} jid 
-	 * @param {*} forceForward 
-	 * @param {*} options 
-	 * @returns 
-	 */
-	m.copyNForward = (jid = m.chat, forceForward = false, options = {}) => conn.copyNForward(jid, m, forceForward, options)
-
-    return m
-}
-
-async function startHisoka() {
+async function startHisoka(setting) {
     const { version, isLatest } = await fetchLatestBaileysVersion()
 	console.log(`using WA v${version.join('.')}, isLatest: ${isLatest}`)
     console.log(color(figlet.textSync('Wa-OpenAI', {
@@ -149,8 +46,48 @@ async function startHisoka() {
             if (!client.public && !mek.key.fromMe && chatUpdate.type === 'notify') return
             if (mek.key.id.startsWith('BAE5') && mek.key.id.length === 16) return
             m = smsg(client, mek, store)
-            console.log('cek isi variable m >>> ', client.sendMessage());
-            require("./sansekai")(client, m, chatUpdate, store)
+
+            var body = (m.mtype === 'conversation') ? m.message.conversation : (m.mtype == 'imageMessage') ? m.message.imageMessage.caption : (m.mtype == 'videoMessage') ? m.message.videoMessage.caption : (m.mtype == 'extendedTextMessage') ? m.message.extendedTextMessage.text : (m.mtype == 'buttonsResponseMessage') ? m.message.buttonsResponseMessage.selectedButtonId : (m.mtype == 'listResponseMessage') ? m.message.listResponseMessage.singleSelectReply.selectedRowId : (m.mtype == 'templateButtonReplyMessage') ? m.message.templateButtonReplyMessage.selectedId : (m.mtype === 'messageContextInfo') ? (m.message.buttonsResponseMessage?.selectedButtonId || m.message.listResponseMessage?.singleSelectReply.selectedRowId || m.text) : ''
+
+            if (body === '/gempa') {
+                
+                // cron.schedule('* * * * * *', function() {
+                //     console.log('Running task every second');
+                // });
+                setInterval(() => {
+                    console.log('[Running setInterval every 5 second ...]')
+                    const data_tempa = models.gempa_terkini()
+                    data_tempa.then((response) => {
+
+                        let cek_kirim = models.db_gempa_terkini.cek_gempa_terkini(response.data)
+
+                        let pesan = '*Informasi Gempa Terkini* \n\n';
+                        pesan += `*Tanggal* : ${response.data.Infogempa.gempa.Tanggal} \n`
+                        pesan += `*Pukul* : ${response.data.Infogempa.gempa.Jam} \n`
+                        pesan += `*Wilayah* : ${response.data.Infogempa.gempa.Wilayah} \n`
+                        pesan += `*Kedalaman* : ${response.data.Infogempa.gempa.Kedalaman} \n`
+                        pesan += `*Magnitude* : ${response.data.Infogempa.gempa.Magnitude} \n`
+                        pesan += `*Potensi* : ${response.data.Infogempa.gempa.Potensi} \n`
+                        pesan += `*Dirasakan* : ${response.data.Infogempa.gempa.Dirasakan} \n\n`
+                        
+                        pesan += `https://ews.bmkg.go.id/TEWS/data/${response.data.Infogempa.gempa.Shakemap} \n`
+
+                        if (cek_kirim) {
+                            client.sendMessage('6281943214722@s.whatsapp.net', {text: pesan }, mek)
+                            const coordinates = response.data.Infogempa.gempa.Coordinates.split(",")
+                            client.sendMessage('6281943214722@s.whatsapp.net', { location: { degreesLatitude: coordinates[0], degreesLongitude: coordinates[1] } }, mek)
+                        }
+            
+                        // client.sendMessage('6281943214722@s.whatsapp.net', {image: {url: 'https://example.com/image.jpeg'} }, mek)
+                        // console.log('hasil kirim wa ', hasil)
+                    })
+                }, 10000)
+                
+
+            } else {
+                require("./sansekai")(client, m, chatUpdate, store, setting)
+            }
+
         } catch (err) {
             console.log(err)
         }
@@ -226,6 +163,7 @@ async function startHisoka() {
     client.ev.on('connection.update', async (update) => {
         const { connection, lastDisconnect } = update	    
         if (connection === 'close') {
+            console.log('cek DisconnectReason ', DisconnectReason)
             let reason = new Boom(lastDisconnect?.error)?.output.statusCode
             if (reason === DisconnectReason.badSession) { console.log(`Bad Session File, Please Delete Session and Scan Again`); process.exit(); }
             else if (reason === DisconnectReason.connectionClosed) { console.log("Connection closed, reconnecting...."); startHisoka(); } 
@@ -237,7 +175,7 @@ async function startHisoka() {
             else { console.log(`Unknown DisconnectReason: ${reason}|${connection}`); startHisoka(); }
         } else if(connection === 'open') {
             console.log('Bot conneted to server')
-            client.sendMessage(owner+'@s.whatsapp.net', { text: `Bot started!\n\njangan lupa support ya bang :)\n${donet}` })
+            // client.sendMessage(owner+'@s.whatsapp.net', { text: `Bot started!\n\njangan lupa support ya bang :)\n${donet}` })
         }
         // console.log('Connected...', update)
     })
@@ -275,13 +213,4 @@ async function startHisoka() {
     return client
 }
 
-startHisoka()
-
-
-let file = require.resolve(__filename)
-fs.watchFile(file, () => {
-	fs.unwatchFile(file)
-	console.log(chalk.redBright(`Update ${__filename}`))
-	delete require.cache[file]
-	require(file)
-})
+module.exports = startHisoka

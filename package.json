@@ -5,7 +5,8 @@
   "main": "index.js",
   "type": "commonjs",
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "test": "node src/main.js"
   },
   "keywords": [
     "termux",
@@ -25,11 +26,14 @@
     "@adiwajshing/baileys": "4.4.0",
     "@adiwajshing/keyed-db": "^0.2.4",
     "awesome-phonenumber": "^2.64.0",
+    "axios": "^1.2.1",
     "chalk": "^4.1.2",
     "crypto": "^1.0.1",
     "figlet": "^1.5.2",
     "fs": "0.0.1-security",
     "lodash": "^4.17.21",
+    "mysql": "^2.18.1",
+    "node-cron": "^3.0.2",
     "openai": "^3.1.0",
     "pino": "^7.0.5",
     "qrcode-terminal": "^0.12.0",

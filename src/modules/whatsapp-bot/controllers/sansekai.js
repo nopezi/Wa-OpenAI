@@ -3,9 +3,9 @@ const fs = require('fs')
 const util = require('util')
 const chalk = require('chalk')
 const { Configuration, OpenAIApi } = require("openai")
-let setting = require('./key.json')
+// let setting = require('./key.json')
 
-module.exports = sansekai = async (client, m, chatUpdate, store) => {
+module.exports = sansekai = async (client, m, chatUpdate, store, setting) => {
     try {
         var body = (m.mtype === 'conversation') ? m.message.conversation : (m.mtype == 'imageMessage') ? m.message.imageMessage.caption : (m.mtype == 'videoMessage') ? m.message.videoMessage.caption : (m.mtype == 'extendedTextMessage') ? m.message.extendedTextMessage.text : (m.mtype == 'buttonsResponseMessage') ? m.message.buttonsResponseMessage.selectedButtonId : (m.mtype == 'listResponseMessage') ? m.message.listResponseMessage.singleSelectReply.selectedRowId : (m.mtype == 'templateButtonReplyMessage') ? m.message.templateButtonReplyMessage.selectedId : (m.mtype === 'messageContextInfo') ? (m.message.buttonsResponseMessage?.selectedButtonId || m.message.listResponseMessage?.singleSelectReply.selectedRowId || m.text) : ''
         var budy = (typeof m.text == 'string' ? m.text : '')
@@ -40,38 +40,40 @@ module.exports = sansekai = async (client, m, chatUpdate, store) => {
         if (setting.autoAI) {
             // Push Message To Console && Auto Read
             if (argsLog && !m.isGroup) {
-            // client.sendReadReceipt(m.chat, m.sender, [m.key.id])
-            console.log(chalk.black(chalk.bgWhite('[ LOGS ]')), color(argsLog, 'turquoise'), chalk.magenta('From'), chalk.green(pushname), chalk.yellow(`[ ${m.sender.replace('@s.whatsapp.net', '')} ]`))
+                // client.sendReadReceipt(m.chat, m.sender, [m.key.id])
+                console.log(chalk.black(chalk.bgWhite('[ LOGS ]')), color(argsLog, 'turquoise'), chalk.magenta('From'), chalk.green(pushname), chalk.yellow(`[ ${m.sender.replace('@s.whatsapp.net', '')} ]`))
             } else if (argsLog && m.isGroup) {
-            // client.sendReadReceipt(m.chat, m.sender, [m.key.id])
-            console.log(chalk.black(chalk.bgWhite('[ LOGS ]')), color(argsLog, 'turquoise'), chalk.magenta('From'), chalk.green(pushname), chalk.yellow(`[ ${m.sender.replace('@s.whatsapp.net', '')} ]`), chalk.blueBright('IN'), chalk.green(groupName))
+                // client.sendReadReceipt(m.chat, m.sender, [m.key.id])
+                console.log(chalk.black(chalk.bgWhite('[ LOGS ]')), color(argsLog, 'turquoise'), chalk.magenta('From'), chalk.green(pushname), chalk.yellow(`[ ${m.sender.replace('@s.whatsapp.net', '')} ]`), chalk.blueBright('IN'), chalk.green(groupName))
             }
         } else if (!setting.autoAI) {
             if (isCmd2 && !m.isGroup) {
                 console.log(chalk.black(chalk.bgWhite('[ LOGS ]')), color(argsLog, 'turquoise'), chalk.magenta('From'), chalk.green(pushname), chalk.yellow(`[ ${m.sender.replace('@s.whatsapp.net', '')} ]`))
-                } else if (isCmd2 && m.isGroup) {
+            } else if (isCmd2 && m.isGroup) {
                 console.log(chalk.black(chalk.bgWhite('[ LOGS ]')), color(argsLog, 'turquoise'), chalk.magenta('From'), chalk.green(pushname), chalk.yellow(`[ ${m.sender.replace('@s.whatsapp.net', '')} ]`), chalk.blueBright('IN'), chalk.green(groupName))
-                }
+            }
         }
 
     if (setting.autoAI) {
-        
-        if (budy) {
+        const text_explode = budy.split(" ", 2)
+        if (text_explode[0] === '/bot') {
             try {
                 if (setting.keyopenai === 'ISI_APIKEY_OPENAI_DISINI') return reply('Apikey belum diisi\n\nSilahkan isi terlebih dahulu apikeynya di file key.json\n\nApikeynya bisa dibuat di website: https://beta.openai.com/account/api-keys')
                 const configuration = new Configuration({
                 apiKey: setting.keyopenai, 
                 });
                 const openai = new OpenAIApi(configuration);
+
+                const clean_budy = budy.replace('/bot', '')
                 
                 const response = await openai.createCompletion({
-                model: "text-davinci-003",
-                prompt: budy,
-                temperature: 0.3,
-                max_tokens: 3000,
-                top_p: 1.0,
-                frequency_penalty: 0.0,
-                presence_penalty: 0.0,
+                    model: "text-davinci-003",
+                    prompt: clean_budy,
+                    temperature: 0.3,
+                    max_tokens: 3000,
+                    top_p: 1.0,
+                    frequency_penalty: 0.0,
+                    presence_penalty: 0.0,
                 });
                 m.reply(`${response.data.choices[0].text}\n\n`)
             } catch(err) {
