@@ -1,5 +1,5 @@
 const whatsapp = (env) => {
-    require("http").createServer((_, res) => res.end("Server Running ::: ... ")).listen(env.po)
+    require("http").createServer((_, res) => res.end("Server Running ::: ... ")).listen(process.env.PORT || env.port)
     const { default: sansekaiConnect, useSingleFileAuthState, DisconnectReason, fetchLatestBaileysVersion, generateForwardMessageContent, prepareWAMessageMedia, generateWAMessageFromContent, generateMessageID, downloadContentFromMessage, makeInMemoryStore, jidDecode, proto, getContentType } = require("@adiwajshing/baileys")
     const fs = require('fs')
     const chalk = require('chalk')
