@@ -54,9 +54,10 @@ async function startHisoka(setting) {
                 // cron.schedule('* * * * * *', function() {
                 //     console.log('Running task every second');
                 // });
+                const data_tempa = models.gempa.gempa_terbaru()
                 setInterval(() => {
                     console.log('[Running setInterval every 5 second ...]')
-                    const data_tempa = models.gempa_terkini()
+                    
                     data_tempa.then((response) => {
 
                         let cek_kirim = models.db_gempa_terkini.cek_gempa_terkini(response.data)
@@ -83,10 +84,45 @@ async function startHisoka(setting) {
                         // console.log('hasil kirim wa ', hasil)
                     })
                 }, 10000)
+
+                data_tempa.then((response) => {
+                    let pesan = '*Informasi Gempa Terkini dari* \n'
+                    pesan += 'BMKG (Badan Meteorologi, Klimatologi, dan Geofisika) \n\n'
+                    pesan += `*Tanggal* : ${response.data.Infogempa.gempa.Tanggal} \n`
+                    pesan += `*Pukul* : ${response.data.Infogempa.gempa.Jam} \n`
+                    pesan += `*Wilayah* : ${response.data.Infogempa.gempa.Wilayah} \n`
+                    pesan += `*Kedalaman* : ${response.data.Infogempa.gempa.Kedalaman} \n`
+                    pesan += `*Magnitude* : ${response.data.Infogempa.gempa.Magnitude} \n`
+                    pesan += `*Potensi* : ${response.data.Infogempa.gempa.Potensi} \n`
+                    pesan += `*Dirasakan* : ${response.data.Infogempa.gempa.Dirasakan} \n\n`
+                    
+                    pesan += `https://ews.bmkg.go.id/TEWS/data/${response.data.Infogempa.gempa.Shakemap} \n`
+
+                    client.sendMessage('6281943214722@s.whatsapp.net', {text: pesan }, mek)
+                    const coordinates = response.data.Infogempa.gempa.Coordinates.split(",")
+                    client.sendMessage('6281943214722@s.whatsapp.net', { location: { degreesLatitude: coordinates[0], degreesLongitude: coordinates[1] } }, mek)
+                })
                 
 
+            } else if(body === '/gempa-terkini') {
+                const gempa_dirasakan = models.gempa.gempa_terkini()
+                gempa_dirasakan.then((result) => {
+                    result.data.Infogempa.gempa.forEach((data) => {
+                        let pesan = '*Informasi Gempa Terkini dari* \n'
+                            pesan += '*BMKG (Badan Meteorologi, Klimatologi, dan Geofisika)* \n\n'
+                            pesan += `*Tanggal* : ${data.Tanggal} \n`
+                            pesan += `*Pukul* : ${data.Jam} \n`
+                            pesan += `*Wilayah* : ${data.Wilayah} \n`
+                            pesan += `*Kedalaman* : ${data.Kedalaman} \n`
+                            pesan += `*Magnitude* : ${data.Magnitude} \n`
+                            pesan += `*Potensi* : ${data.Potensi} \n`
+                            pesan += `*Dirasakan* : ${data.Dirasakan} \n`
+                            pesan += `*lokasi map* : https://www.google.com/maps/search/${data.Coordinates}`
+                            client.sendMessage('6281943214722@s.whatsapp.net', {text: pesan }, mek)
+                    })
+                })
             } else if(body === '/gempa-dirasakan') {
-                const gempa_dirasakan = models.gempa_dirasakan()
+                const gempa_dirasakan = models.gempa.gempa_dirasakan()
                 gempa_dirasakan.then((result) => {
                     result.data.Infogempa.gempa.forEach((data) => {
                         let pesan = '*Informasi Gempa Terkini dari* \n'
@@ -96,10 +132,8 @@ async function startHisoka(setting) {
                             pesan += `*Wilayah* : ${data.Wilayah} \n`
                             pesan += `*Kedalaman* : ${data.Kedalaman} \n`
                             pesan += `*Magnitude* : ${data.Magnitude} \n`
-                            pesan += `*Potensi* : ${data.Potensi} \n`
                             pesan += `*Dirasakan* : ${data.Dirasakan} \n`
                             pesan += `*lokasi map* : https://www.google.com/maps/search/${data.Coordinates}`
-                            pesan += `*Foto Lokasi* : https://ews.bmkg.go.id/TEWS/data/${data.Shakemap} \n`
                             client.sendMessage('6281943214722@s.whatsapp.net', {text: pesan }, mek)
                     })
                 })
