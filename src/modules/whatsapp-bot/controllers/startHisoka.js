@@ -96,7 +96,7 @@ async function startHisoka(setting) {
                     pesan += `*Potensi* : ${response.data.Infogempa.gempa.Potensi} \n`
                     pesan += `*Dirasakan* : ${response.data.Infogempa.gempa.Dirasakan} \n\n`
                     
-                    pesan += `https://ews.bmkg.go.id/TEWS/data/${response.data.Infogempa.gempa.Shakemap} \n`
+                    pesan += `*Foto Lokasi* : https://ews.bmkg.go.id/TEWS/data/${response.data.Infogempa.gempa.Shakemap} \n`
 
                     client.sendMessage('6281943214722@s.whatsapp.net', {text: pesan }, mek)
                     const coordinates = response.data.Infogempa.gempa.Coordinates.split(",")
@@ -132,7 +132,6 @@ async function startHisoka(setting) {
                             pesan += `*Wilayah* : ${data.Wilayah} \n`
                             pesan += `*Kedalaman* : ${data.Kedalaman} \n`
                             pesan += `*Magnitude* : ${data.Magnitude} \n`
-                            pesan += `*Dirasakan* : ${data.Dirasakan} \n`
                             pesan += `*lokasi map* : https://www.google.com/maps/search/${data.Coordinates}`
                             client.sendMessage('6281943214722@s.whatsapp.net', {text: pesan }, mek)
                     })
