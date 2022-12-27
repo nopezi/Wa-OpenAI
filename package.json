@@ -2,11 +2,10 @@
   "name": "Wa-OpenAI",
   "version": "1.2.4",
   "description": "WhatsApp Bot OpenAI Using Lib Baileys Multi Device",
-  "main": "index.js",
+  "main": "src/main.js",
   "type": "commonjs",
   "scripts": {
-    "start": "node index.js",
-    "test": "node src/main.js"
+    "start": "node src/main.js"
   },
   "keywords": [
     "termux",
