@@ -117,7 +117,6 @@ async function startHisoka(setting) {
                             pesan += `*Kedalaman* : ${data.Kedalaman} \n`
                             pesan += `*Magnitude* : ${data.Magnitude} \n`
                             pesan += `*Potensi* : ${data.Potensi} \n`
-                            pesan += `*Dirasakan* : ${data.Dirasakan} \n`
                             pesan += `*lokasi map* : https://www.google.com/maps/search/${data.Coordinates}`
                             client.sendMessage('6281943214722@s.whatsapp.net', {text: pesan }, mek)
                     })
@@ -132,6 +131,7 @@ async function startHisoka(setting) {
                             pesan += `*Pukul* : ${data.Jam} \n`
                             pesan += `*Wilayah* : ${data.Wilayah} \n`
                             pesan += `*Kedalaman* : ${data.Kedalaman} \n`
+                            pesan += `*Dirasakan* : ${data.Dirasakan} \n`
                             pesan += `*Magnitude* : ${data.Magnitude} \n`
                             pesan += `*lokasi map* : https://www.google.com/maps/search/${data.Coordinates}`
                             client.sendMessage('6281943214722@s.whatsapp.net', {text: pesan }, mek)
