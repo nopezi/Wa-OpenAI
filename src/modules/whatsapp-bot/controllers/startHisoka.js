@@ -12,12 +12,12 @@ const donet = 'https://saweria.co/sansekai'
 const owner = ['6287878817169']
 
 const store = makeInMemoryStore({ logger: pino().child({ level: 'silent', stream: 'store' }) })
-const { state, saveState } = useSingleFileAuthState(`./${sessionName}.json`)
 
 const models = require('../models/index.js')
 const cron = require('node-cron');
 
 async function startHisoka(setting) {
+    const { state, saveState } = useSingleFileAuthState(`./${setting.sessionName}.json`)
     const { version, isLatest } = await fetchLatestBaileysVersion()
 	console.log(`using WA v${version.join('.')}, isLatest: ${isLatest}`)
     console.log(color(figlet.textSync('Wa-OpenAI', {
@@ -40,7 +40,7 @@ async function startHisoka(setting) {
         //console.log(JSON.stringify(chatUpdate, undefined, 2))
         try {
             mek = chatUpdate.messages[0]
-            console.log('[data mek] ::: ', mek)
+            // console.log('[data mek] ::: ', mek)
             if (!mek.message) return
             mek.message = (Object.keys(mek.message)[0] === 'ephemeralMessage') ? mek.message.ephemeralMessage.message : mek.message
             if (mek.key && mek.key.remoteJid === 'status@broadcast') return
@@ -50,14 +50,30 @@ async function startHisoka(setting) {
 
             var body = (m.mtype === 'conversation') ? m.message.conversation : (m.mtype == 'imageMessage') ? m.message.imageMessage.caption : (m.mtype == 'videoMessage') ? m.message.videoMessage.caption : (m.mtype == 'extendedTextMessage') ? m.message.extendedTextMessage.text : (m.mtype == 'buttonsResponseMessage') ? m.message.buttonsResponseMessage.selectedButtonId : (m.mtype == 'listResponseMessage') ? m.message.listResponseMessage.singleSelectReply.selectedRowId : (m.mtype == 'templateButtonReplyMessage') ? m.message.templateButtonReplyMessage.selectedId : (m.mtype === 'messageContextInfo') ? (m.message.buttonsResponseMessage?.selectedButtonId || m.message.listResponseMessage?.singleSelectReply.selectedRowId || m.text) : ''
 
+            models.db_bot.bot_log({
+                message_id: mek.key.id,
+                user_id: mek.key.remoteJid,
+                first_name_user: m.pushName,
+                message: body,
+                jenis_kirim: (mek.key.fromMe) ? 'di kirim' : 'di terima'
+            })
+
             if (body === '/gempa') {
                 
                 // cron.schedule('* * * * * *', function() {
                 //     console.log('Running task every second');
                 // });
+
+                models.db_bot.bot_bmkg({
+                    user_id: mek.key.remoteJid,
+                    first_name_user: m.pushName
+                })
+
                 const data_tempa = models.gempa.gempa_terbaru()
                 setInterval(() => {
+                    const wa_bmkg = models.db_bot.get_bot_bmkg()
                     console.log('[Running setInterval every 5 second ...]')
+                    console.log('[get data bot bmkg] ::: ', wa_bmkg)
                     
                     data_tempa.then((response) => {
 
@@ -75,13 +91,13 @@ async function startHisoka(setting) {
                         
                         pesan += `https://ews.bmkg.go.id/TEWS/data/${response.data.Infogempa.gempa.Shakemap} \n`
 
-                        if (cek_kirim) {
-                            client.sendMessage('6281943214722@s.whatsapp.net', {text: pesan }, mek)
+                        if (cek_kirim && wa_bmkg != '' && wa_bmkg.user_id) {
+                            client.sendMessage(wa_bmkg.user_id, {text: pesan }, mek)
                             const coordinates = response.data.Infogempa.gempa.Coordinates.split(",")
-                            client.sendMessage('6281943214722@s.whatsapp.net', { location: { degreesLatitude: coordinates[0], degreesLongitude: coordinates[1] } }, mek)
+                            client.sendMessage(wa_bmkg.user_id, { location: { degreesLatitude: coordinates[0], degreesLongitude: coordinates[1] } }, mek)
                         }
             
-                        // client.sendMessage('6281943214722@s.whatsapp.net', {image: {url: 'https://example.com/image.jpeg'} }, mek)
+                        // client.sendMessage(mek.key.remoteJid, {image: {url: 'https://example.com/image.jpeg'} }, mek)
                         // console.log('hasil kirim wa ', hasil)
                     })
                 }, 10000)
@@ -99,9 +115,9 @@ async function startHisoka(setting) {
                     
                     pesan += `*Foto Lokasi* : https://ews.bmkg.go.id/TEWS/data/${response.data.Infogempa.gempa.Shakemap} \n`
 
-                    client.sendMessage('6281943214722@s.whatsapp.net', {text: pesan }, mek)
+                    client.sendMessage(mek.key.remoteJid, {text: pesan }, mek)
                     const coordinates = response.data.Infogempa.gempa.Coordinates.split(",")
-                    client.sendMessage('6281943214722@s.whatsapp.net', { location: { degreesLatitude: coordinates[0], degreesLongitude: coordinates[1] } }, mek)
+                    client.sendMessage(mek.key.remoteJid, { location: { degreesLatitude: coordinates[0], degreesLongitude: coordinates[1] } }, mek)
                 })
                 
 
@@ -118,7 +134,7 @@ async function startHisoka(setting) {
                             pesan += `*Magnitude* : ${data.Magnitude} \n`
                             pesan += `*Potensi* : ${data.Potensi} \n`
                             pesan += `*lokasi map* : https://www.google.com/maps/search/${data.Coordinates}`
-                            client.sendMessage('6281943214722@s.whatsapp.net', {text: pesan }, mek)
+                            client.sendMessage(mek.key.remoteJid, {text: pesan }, mek)
                     })
                 })
             } else if(body === '/gempa-dirasakan') {
@@ -134,7 +150,7 @@ async function startHisoka(setting) {
                             pesan += `*Dirasakan* : ${data.Dirasakan} \n`
                             pesan += `*Magnitude* : ${data.Magnitude} \n`
                             pesan += `*lokasi map* : https://www.google.com/maps/search/${data.Coordinates}`
-                            client.sendMessage('6281943214722@s.whatsapp.net', {text: pesan }, mek)
+                            client.sendMessage(mek.key.remoteJid, {text: pesan }, mek)
                     })
                 })
             } else {

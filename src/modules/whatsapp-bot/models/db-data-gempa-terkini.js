@@ -38,8 +38,8 @@ function cek_gempa_terkini(cek) {
                 sql += `'${cek.Infogempa.gempa.Shakemap}' )`
                 console.log('[query insert cek_gempa_terkini] ', sql)
                 db.query(sql, function(err, result) {
-                    console.log('[error] ', err)
-                    console.log('[result] ', result)
+                    console.log('[error] ::: ', err)
+                    console.log('[result] ::: ', result)
                 })
                 // db.end()
                 hasil_cek_gempa_terkini = true

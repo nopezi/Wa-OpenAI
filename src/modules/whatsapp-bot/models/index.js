@@ -1,14 +1,11 @@
-const gempa_terkini = require('./data-gempa-terkini.js')
-const gempa_dirasakan = require('./data-gempa-dirasakan.js')
 const gempa = require('./gempa.js')
-
 const db_gempa_terkini = require('./db-data-gempa-terkini.js')
+const db_bot = require('./bot-log.js')
 
 const models = {
     gempa,
-    gempa_terkini,
-    gempa_dirasakan,
-    db_gempa_terkini
+    db_gempa_terkini,
+    db_bot
 }
 
 module.exports = models
