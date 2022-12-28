@@ -7,7 +7,7 @@ const { Boom } = require('@hapi/boom')
 const smsg = require('./smsg.js')
 const color = require('./color.js')
 
-const sessionName = 'yusril'
+const sessionName = 'nopezi'
 const donet = 'https://saweria.co/sansekai'
 const owner = ['6287878817169']
 
