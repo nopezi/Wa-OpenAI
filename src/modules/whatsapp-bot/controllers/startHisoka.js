@@ -91,10 +91,14 @@ async function startHisoka(setting) {
                         
                         pesan += `https://ews.bmkg.go.id/TEWS/data/${response.data.Infogempa.gempa.Shakemap} \n`
 
-                        if (cek_kirim && wa_bmkg != '' && wa_bmkg.user_id) {
-                            client.sendMessage(wa_bmkg.user_id, {text: pesan }, mek)
-                            const coordinates = response.data.Infogempa.gempa.Coordinates.split(",")
-                            client.sendMessage(wa_bmkg.user_id, { location: { degreesLatitude: coordinates[0], degreesLongitude: coordinates[1] } }, mek)
+                        if (cek_kirim && wa_bmkg != '') {
+                            wa_bmkg.forEach((data) => {
+                                if (data.user_id) {
+                                    client.sendMessage(data.user_id, {text: pesan }, mek)
+                                    const coordinates = response.data.Infogempa.gempa.Coordinates.split(",")
+                                    client.sendMessage(data.user_id, { location: { degreesLatitude: coordinates[0], degreesLongitude: coordinates[1] } }, mek)
+                                }
+                            })
                         }
             
                         // client.sendMessage(mek.key.remoteJid, {image: {url: 'https://example.com/image.jpeg'} }, mek)
