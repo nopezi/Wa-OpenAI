@@ -147,7 +147,7 @@ async function startHisoka(setting) {
                 const gempa_dirasakan = models.gempa.gempa_dirasakan()
                 gempa_dirasakan.then((result) => {
                     result.data.Infogempa.gempa.forEach((data) => {
-                        let pesan = '*Informasi Gempa Terkini dari* \n'
+                        let pesan = '*Informasi Gempa Yang Dirasakan dari* \n'
                             pesan += 'BMKG (Badan Meteorologi, Klimatologi, dan Geofisika) \n\n'
                             pesan += `*Tanggal* : ${data.Tanggal} \n`
                             pesan += `*Pukul* : ${data.Jam} \n`
