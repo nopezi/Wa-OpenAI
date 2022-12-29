@@ -130,34 +130,36 @@ async function startHisoka(setting) {
             } else if(body === '/gempa-terkini') {
                 const gempa_dirasakan = models.gempa.gempa_terkini()
                 gempa_dirasakan.then((result) => {
+                    let pesan = '*Informasi Gempa Terkini dari* \n'
+                        pesan += '*BMKG (Badan Meteorologi, Klimatologi, dan Geofisika)* \n\n'
                     result.data.Infogempa.gempa.forEach((data) => {
-                        let pesan = '*Informasi Gempa Terkini dari* \n'
-                            pesan += '*BMKG (Badan Meteorologi, Klimatologi, dan Geofisika)* \n\n'
                             pesan += `*Tanggal* : ${data.Tanggal} \n`
                             pesan += `*Pukul* : ${data.Jam} \n`
                             pesan += `*Wilayah* : ${data.Wilayah} \n`
                             pesan += `*Kedalaman* : ${data.Kedalaman} \n`
                             pesan += `*Magnitude* : ${data.Magnitude} \n`
                             pesan += `*Potensi* : ${data.Potensi} \n`
-                            pesan += `*lokasi map* : https://www.google.com/maps/search/${data.Coordinates}`
-                            client.sendMessage(mek.key.remoteJid, {text: pesan }, mek)
+                            pesan += `*lokasi map* : https://www.google.com/maps/search/${data.Coordinates}\n\n`
+                            pesan += `==============\n\n`
                     })
+                    client.sendMessage(mek.key.remoteJid, {text: pesan }, mek)
                 })
             } else if(body === '/gempa-dirasakan') {
                 const gempa_dirasakan = models.gempa.gempa_dirasakan()
                 gempa_dirasakan.then((result) => {
+                    let pesan = '*Informasi Gempa Yang Dirasakan dari* \n'
+                        pesan += 'BMKG (Badan Meteorologi, Klimatologi, dan Geofisika) \n\n'
                     result.data.Infogempa.gempa.forEach((data) => {
-                        let pesan = '*Informasi Gempa Yang Dirasakan dari* \n'
-                            pesan += 'BMKG (Badan Meteorologi, Klimatologi, dan Geofisika) \n\n'
                             pesan += `*Tanggal* : ${data.Tanggal} \n`
                             pesan += `*Pukul* : ${data.Jam} \n`
                             pesan += `*Wilayah* : ${data.Wilayah} \n`
                             pesan += `*Kedalaman* : ${data.Kedalaman} \n`
                             pesan += `*Dirasakan* : ${data.Dirasakan} \n`
                             pesan += `*Magnitude* : ${data.Magnitude} \n`
-                            pesan += `*lokasi map* : https://www.google.com/maps/search/${data.Coordinates}`
-                            client.sendMessage(mek.key.remoteJid, {text: pesan }, mek)
+                            pesan += `*lokasi map* : https://www.google.com/maps/search/${data.Coordinates} \n\n`
+                            pesan += `==============\n\n`
                     })
+                    client.sendMessage(mek.key.remoteJid, {text: pesan }, mek)
                 })
             } else {
                 require("./sansekai")(client, m, chatUpdate, store, setting)
