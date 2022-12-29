@@ -64,6 +64,27 @@ async function startHisoka(setting) {
                 //     console.log('Running task every second');
                 // });
 
+                data_tempa.then((response) => {
+                    let pesan = '*Informasi Gempa Terkini dari* \n'
+                    pesan += 'BMKG (Badan Meteorologi, Klimatologi, dan Geofisika) \n\n'
+                    pesan += `*Tanggal* : ${response.data.Infogempa.gempa.Tanggal} \n`
+                    pesan += `*Pukul* : ${response.data.Infogempa.gempa.Jam} \n`
+                    pesan += `*Wilayah* : ${response.data.Infogempa.gempa.Wilayah} \n`
+                    pesan += `*Kedalaman* : ${response.data.Infogempa.gempa.Kedalaman} \n`
+                    pesan += `*Magnitude* : ${response.data.Infogempa.gempa.Magnitude} \n`
+                    pesan += `*Potensi* : ${response.data.Infogempa.gempa.Potensi} \n`
+                    pesan += `*Dirasakan* : ${response.data.Infogempa.gempa.Dirasakan} \n\n`
+                    
+                    pesan += `*Foto Lokasi* : https://ews.bmkg.go.id/TEWS/data/${response.data.Infogempa.gempa.Shakemap} \n`
+
+                    client.sendMessage(mek.key.remoteJid, {text: pesan }, mek)
+                    const coordinates = response.data.Infogempa.gempa.Coordinates.split(",")
+                    client.sendMessage(mek.key.remoteJid, { location: { degreesLatitude: coordinates[0], degreesLongitude: coordinates[1] } }, mek)
+                })
+                
+
+            } else if(body === '/gempa-live') {
+
                 models.db_bot.bot_bmkg({
                     user_id: mek.key.remoteJid,
                     first_name_user: m.pushName
@@ -105,25 +126,6 @@ async function startHisoka(setting) {
                         // console.log('hasil kirim wa ', hasil)
                     })
                 }, 10000)
-
-                data_tempa.then((response) => {
-                    let pesan = '*Informasi Gempa Terkini dari* \n'
-                    pesan += 'BMKG (Badan Meteorologi, Klimatologi, dan Geofisika) \n\n'
-                    pesan += `*Tanggal* : ${response.data.Infogempa.gempa.Tanggal} \n`
-                    pesan += `*Pukul* : ${response.data.Infogempa.gempa.Jam} \n`
-                    pesan += `*Wilayah* : ${response.data.Infogempa.gempa.Wilayah} \n`
-                    pesan += `*Kedalaman* : ${response.data.Infogempa.gempa.Kedalaman} \n`
-                    pesan += `*Magnitude* : ${response.data.Infogempa.gempa.Magnitude} \n`
-                    pesan += `*Potensi* : ${response.data.Infogempa.gempa.Potensi} \n`
-                    pesan += `*Dirasakan* : ${response.data.Infogempa.gempa.Dirasakan} \n\n`
-                    
-                    pesan += `*Foto Lokasi* : https://ews.bmkg.go.id/TEWS/data/${response.data.Infogempa.gempa.Shakemap} \n`
-
-                    client.sendMessage(mek.key.remoteJid, {text: pesan }, mek)
-                    const coordinates = response.data.Infogempa.gempa.Coordinates.split(",")
-                    client.sendMessage(mek.key.remoteJid, { location: { degreesLatitude: coordinates[0], degreesLongitude: coordinates[1] } }, mek)
-                })
-                
 
             } else if(body === '/gempa-terkini') {
                 const gempa_dirasakan = models.gempa.gempa_terkini()
