@@ -63,6 +63,7 @@ async function startHisoka(setting) {
                 // cron.schedule('* * * * * *', function() {
                 //     console.log('Running task every second');
                 // });
+                const data_tempa = models.gempa.gempa_terbaru()
 
                 data_tempa.then((response) => {
                     let pesan = '*Informasi Gempa Terkini dari* \n'
