@@ -10,11 +10,13 @@ function gempa_live(body, data, client, flag) {
         })
         // kirim informasi gempa terkini secara live
 
+        const data_gempa = models.gempa.gempa_terbaru()
+
         setInterval(() => {
             const wa_bmkg = whatsapp.models.db_bot.get_bot_bmkg()
             console.log('[Running setInterval every 5 second ...]')
             
-            data_tempa.then((response) => {
+            data_gempa.then((response) => {
                 // let cek_kirim = models.db_gempa_terkini.cek_gempa_terkini(response.data)
                 let cek_kirim = models.gempa_terkini(response.data)
 
