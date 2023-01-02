@@ -13,7 +13,7 @@ function cek_gempa_terkini(cek) {
                ORDER BY 
                 id DESC LIMIT 1`
     console.log('[query cek_gempa_terkini] ', sql)
-    db.resume()
+    // db.resume()
     db.query(sql, function (err, rows) {
         if (err) {
           console.log('[cek_gempa_terkini error] :>> ', err)
@@ -38,8 +38,8 @@ function cek_gempa_terkini(cek) {
                 sql += `'${cek.Infogempa.gempa.Shakemap}' )`
                 console.log('[query insert cek_gempa_terkini] ', sql)
                 db.query(sql, function(err, result) {
-                    console.log('[error] ', err)
-                    console.log('[result] ', result)
+                    console.log('[error] ::: ', err)
+                    console.log('[result] ::: ', result)
                 })
                 // db.end()
                 hasil_cek_gempa_terkini = true
