@@ -59,10 +59,6 @@ async function startHisoka(setting) {
             })
 
             if (body === '/gempa') {
-                
-                // cron.schedule('* * * * * *', function() {
-                //     console.log('Running task every second');
-                // });
                 const data_tempa = models.gempa.gempa_terbaru()
 
                 data_tempa.then((response) => {
@@ -92,13 +88,12 @@ async function startHisoka(setting) {
                 })
 
                 const data_tempa = models.gempa.gempa_terbaru()
+                // kirim informasi gempa terkini secara live
                 setInterval(() => {
                     const wa_bmkg = models.db_bot.get_bot_bmkg()
                     console.log('[Running setInterval every 5 second ...]')
-                    // console.log('[get data bot bmkg] ::: ', wa_bmkg)
                     
                     data_tempa.then((response) => {
-
                         let cek_kirim = models.db_gempa_terkini.cek_gempa_terkini(response.data)
 
                         let pesan = '*Informasi Gempa Terkini dari* \n'
@@ -123,9 +118,6 @@ async function startHisoka(setting) {
                                 }
                             })
                         }
-            
-                        // client.sendMessage(mek.key.remoteJid, {image: {url: 'https://example.com/image.jpeg'} }, mek)
-                        // console.log('hasil kirim wa ', hasil)
                     })
                 }, 10000)
 
