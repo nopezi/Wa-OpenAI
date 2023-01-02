@@ -18,7 +18,7 @@ function gempa_live(body, data, client, flag) {
             
             data_gempa.then((response) => {
                 // let cek_kirim = models.db_gempa_terkini.cek_gempa_terkini(response.data)
-                let cek_kirim = models.gempa_terkini(response.data)
+                let cek_kirim = models.gempa_terkini.cek_gempa_terkini(response.data)
 
                 let pesan = '*Informasi Gempa Terkini dari* \n'
                 pesan += 'BMKG (Badan Meteorologi, Klimatologi, dan Geofisika) \n\n'
