@@ -13,7 +13,7 @@ function cek_gempa_terkini(cek) {
                ORDER BY 
                 id DESC LIMIT 1`
     console.log('[query cek_gempa_terkini] ', sql)
-    db.resume()
+    // db.resume()
     db.query(sql, function (err, rows) {
         if (err) {
           console.log('[cek_gempa_terkini error] :>> ', err)

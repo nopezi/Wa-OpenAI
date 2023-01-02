@@ -1,18 +1,28 @@
 var mysql = require('mysql')
-var connection = mysql.createConnection({
+var dbConf = {
   host: 'us-cdbr-east-02.cleardb.com',
   user: 'b10250d4524049', //
   password: 'd377e116', //
   database: 'heroku_13b21ebb9b93855',
   port: '3306'
-})
-connection.connect((err) => {
-  console.log('Database process')
-  if (err) {
-    console.log(err)
-    return
+}
+// var connection = mysql.createConnection()
+// connection.connect((err) => {
+//   if (err) {
+//     console.log(err)
+//     console.log('Database close')
+//     return
+//   }
+//   console.log('Database connected')
+// })
+
+var pool = mysql.createPool(dbConf)
+
+pool.on('connection', function(_conn) {
+  if (_conn) {
+      logger.info('Connected the database via threadId %d!!', _conn.threadId);
+      _conn.query('SET SESSION auto_increment_increment=1');
   }
-  console.log('Database connected')
 })
 
-module.exports = connection
+module.exports = pool
