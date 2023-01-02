@@ -95,7 +95,7 @@ async function startHisoka(setting) {
                 setInterval(() => {
                     const wa_bmkg = models.db_bot.get_bot_bmkg()
                     console.log('[Running setInterval every 5 second ...]')
-                    console.log('[get data bot bmkg] ::: ', wa_bmkg)
+                    // console.log('[get data bot bmkg] ::: ', wa_bmkg)
                     
                     data_tempa.then((response) => {
 
@@ -119,6 +119,7 @@ async function startHisoka(setting) {
                                     client.sendMessage(data.user_id, {text: pesan }, mek)
                                     const coordinates = response.data.Infogempa.gempa.Coordinates.split(",")
                                     client.sendMessage(data.user_id, { location: { degreesLatitude: coordinates[0], degreesLongitude: coordinates[1] } }, mek)
+                                    console.log('[send message bot bmkg] ::: ', data.user_id)
                                 }
                             })
                         }
