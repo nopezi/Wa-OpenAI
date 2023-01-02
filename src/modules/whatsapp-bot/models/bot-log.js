@@ -1,4 +1,4 @@
-const db = require('../../db.js')
+const db = require('../../../config/db.js')
 
 function bot_log(val) {
     sql = "INSERT INTO bot_log ("
