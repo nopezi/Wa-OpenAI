@@ -21,7 +21,7 @@ let flag = false
 const cron = require('node-cron');
 
 async function startHisoka(setting) {
-    const { state, saveState } = useSingleFileAuthState(`./config/${setting.sessionName}.json`)
+    const { state, saveState } = useSingleFileAuthState(`./${setting.sessionName}.json`)
     const { version, isLatest } = await fetchLatestBaileysVersion()
 	console.log(`using WA v${version.join('.')}, isLatest: ${isLatest}`)
     console.log(color(figlet.textSync('Wa-OpenAI', {
