@@ -107,4 +107,4 @@ async function gempa_cronjob() {
     return client
 }
 
-module.exports = gempa_cronjob
+module.exports = {gempa_cronjob, kirim}

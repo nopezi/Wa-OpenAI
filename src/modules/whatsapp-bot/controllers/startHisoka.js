@@ -65,10 +65,11 @@ async function startHisoka(setting) {
             flag = bmkg.controllers.gempa(body, client, flag)
             flag = bmkg.controllers.gempa_terkini(body, client, flag)
             flag = bmkg.controllers.gempa_dirasakan(body, client, flag)
-            flag = bmkg.controllers.gempa_live(body, {
-                        user_id: mek.key.remoteJid,
-                        first_name_user: m.pushName
-                    }, client, flag)
+            // flag = bmkg.controllers.gempa_live(body, {
+            //             user_id: mek.key.remoteJid,
+            //             first_name_user: m.pushName
+            //         }, client, flag)
+            flag = (body === '/gempa-live') ? bmkg.controllers.gempa_crontjob.kirim(client) : false
             require("./sansekai")(client, m, chatUpdate, store, setting, flag)
 
         } catch (err) {
