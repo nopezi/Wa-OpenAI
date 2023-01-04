@@ -4,6 +4,7 @@ function gempa(body, client, flag) {
     const data_tempa = models.gempa.gempa_terbaru()
 
     if (!flag && body == '/gempa') {
+        console.log('[gempa] ::: ', body)
         
         data_tempa.then((response) => {
             let pesan = '*Informasi Gempa Terkini dari* \n'

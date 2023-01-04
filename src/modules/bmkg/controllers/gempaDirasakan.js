@@ -2,7 +2,7 @@ const models = require('../models/index.js')
 
 function gempa_dirasakan(body, client, flag) {
     if (!flag && body === '/gempa-dirasakan') {
-        
+        console.log('[gempa dirasakan] ::: ', body)
         const dirasakan = models.gempa.gempa_dirasakan()
         dirasakan.then((result) => {
             let pesan = '*Informasi Gempa Yang Dirasakan dari* \n'

@@ -4,6 +4,7 @@ const whatsapp = require('../../whatsapp-bot/index.js')
 function gempa_live(body, data, client, flag) {
 
     if (!flag && body === '/gempa-live') {
+        console.log('[gempa live] ::: ', body)
         whatsapp.models.db_bot.bot_bmkg({
             user_id: data.user_id,
             first_name_user: data.first_name_user

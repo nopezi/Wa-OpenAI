@@ -2,6 +2,7 @@ const models = require('../models/index.js')
 
 function gempa_terkini(body, client, flag) {
     if (!flag && body === '/gempa-terkini') {
+        console.log('[gempa terkini] ::: ', body)
         const terkini = models.gempa.gempa_terkini()
         terkini.then((result) => {
             let pesan = '*Informasi Gempa Terkini dari* \n'
