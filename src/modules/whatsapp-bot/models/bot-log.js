@@ -58,8 +58,23 @@ function get_bot_bmkg(val) {
     return data_get_bot_bmkg
 }
 
+function get_bot_bmkg2(val, callback) {
+    sql = `SELECT * FROM bot_bmkg ORDER BY id DESC`
+    db.query(sql, function (err, rows) {
+        if (err) {
+            console.log('[get_bot_bmkg error] :>> ', err)
+            return callback('')
+        } else {
+            data_get_bot_bmkg = rows
+            return callback(rows)
+        }
+    })
+    // return data_get_bot_bmkg
+}
+
 module.exports = {
     bot_log,
     bot_bmkg,
-    get_bot_bmkg
+    get_bot_bmkg,
+    get_bot_bmkg2
 }
