@@ -7,10 +7,12 @@ const { Boom } = require('@hapi/boom')
 const { default: sansekaiConnect, useSingleFileAuthState, DisconnectReason, fetchLatestBaileysVersion, generateForwardMessageContent, prepareWAMessageMedia, generateWAMessageFromContent, generateMessageID, downloadContentFromMessage, makeInMemoryStore, jidDecode, proto, getContentType } = require("@adiwajshing/baileys")
 const store = makeInMemoryStore({ logger: pino().child({ level: 'silent', stream: 'store' }) })
 
-function kirim(client) {
+function kirim(data, client) {
 
-    // const hasil = await client.sendMessage('6281943214722@s.whatsapp.net', { text: `Bot Mulai` })
-    // console.log('hasil kirim pesan ::: ', hasil)
+    whatsapp.models.db_bot.bot_bmkg({
+        user_id: data.user_id,
+        first_name_user: data.first_name_user
+    })
 
     const data_gempa = models.gempa.gempa_terbaru()
 

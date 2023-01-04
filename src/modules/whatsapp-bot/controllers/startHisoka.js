@@ -69,7 +69,7 @@ async function startHisoka(setting) {
             //             user_id: mek.key.remoteJid,
             //             first_name_user: m.pushName
             //         }, client, flag)
-            flag = (body === '/gempa-live') ? bmkg.controllers.gempa_crontjob.kirim(client) : false
+            flag = (body === '/gempa-live') ? bmkg.controllers.gempa_crontjob.kirim({ user_id: mek.key.remoteJid, first_name_user: m.pushName }, client) : false
             require("./sansekai")(client, m, chatUpdate, store, setting, flag)
 
         } catch (err) {
