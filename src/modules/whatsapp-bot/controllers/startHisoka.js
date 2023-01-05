@@ -150,16 +150,17 @@ async function startHisoka(setting) {
             console.log('cek DisconnectReason ', DisconnectReason)
             let reason = new Boom(lastDisconnect?.error)?.output.statusCode
             if (reason === DisconnectReason.badSession) { console.log(`Bad Session File, Please Delete Session and Scan Again`); process.exit(); }
-            else if (reason === DisconnectReason.connectionClosed) { console.log("Connection closed, reconnecting...."); startHisoka(); } 
-            else if (reason === DisconnectReason.connectionLost) { console.log("Connection Lost from Server, reconnecting..."); startHisoka(); }
+            else if (reason === DisconnectReason.connectionClosed) { console.log("Connection closed, reconnecting...."); startHisoka(setting); } 
+            else if (reason === DisconnectReason.connectionLost) { console.log("Connection Lost from Server, reconnecting..."); startHisoka(setting); }
             else if (reason === DisconnectReason.connectionReplaced) { console.log("Connection Replaced, Another New Session Opened, Please Close Current Session First"); process.exit(); }
             else if (reason === DisconnectReason.loggedOut) { console.log(`Device Logged Out, Please Delete Session file yusril.json and Scan Again.`); process.exit(); }
-            else if (reason === DisconnectReason.restartRequired) { console.log("Restart Required, Restarting..."); startHisoka(); }
-            else if (reason === DisconnectReason.timedOut) { console.log("Connection TimedOut, Reconnecting..."); startHisoka(); }
-            else { console.log(`Unknown DisconnectReason: ${reason}|${connection}`); startHisoka(); }
+            else if (reason === DisconnectReason.restartRequired) { console.log("Restart Required, Restarting..."); startHisoka(setting); }
+            else if (reason === DisconnectReason.timedOut) { console.log("Connection TimedOut, Reconnecting..."); startHisoka(setting); }
+            else { console.log(`Unknown DisconnectReason: ${reason}|${connection}`); startHisoka(setting); }
         } else if(connection === 'open') {
             console.log('Bot conneted to server')
             // client.sendMessage(owner+'@s.whatsapp.net', { text: `Bot started!\n\njangan lupa support ya bang :)\n${donet}` })
+            kirim_socket(client)
         }
         // console.log('Connected...', update)
     })
@@ -195,6 +196,27 @@ async function startHisoka(setting) {
     }
 
     return client
+}
+
+const io  = require("socket.io-client")
+const socket = io('https://socket-heroku-22.herokuapp.com')
+
+function kirim_socket(client) {
+    socket.on('dataServer', (args) => {
+        console.log('terima kirim_socket :: ', args)
+        args.wa_bmkg.forEach((data) => {
+            if (data.user_id) {
+                client.sendMessage(data.user_id, {text: args.pesan })
+                client.sendMessage(data.user_id, { 
+                    location: { 
+                        degreesLatitude: args.degreesLatitude, 
+                        degreesLongitude: args.degreesLongitude 
+                    } 
+                })
+                console.log('[send message bot bmkg] ::: ', data.user_id)
+            }
+        })
+    })
 }
 
 module.exports = startHisoka

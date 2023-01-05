@@ -4,4 +4,4 @@ const router = require('./routers/index.js')
 
 modules.whatsapp.controllers(env)
 
-// router()
+router()
