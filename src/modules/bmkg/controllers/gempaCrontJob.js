@@ -109,4 +109,24 @@ async function gempa_cronjob() {
     return client
 }
 
-module.exports = {gempa_cronjob, kirim}
+async function daftar(data, client) {
+
+    console.log('[daftar] ::: ')
+    await whatsapp.models.db_bot.bot_bmkg({
+        user_id: data.user_id,
+        first_name_user: data.first_name_user
+    }, function(callback){
+        console.log('[daftar] ::: ', callback)
+        if (callback) {
+            const pesan = 'Terima kasih, anda akan mendapatkan informasi dari kami secara live, jika terjadi gempa bumi yang dapat di rasakan di seluruh wilayah indonesia'
+            client.sendMessage(data.user_id, {text:  pesan})
+        } else {
+            let pesan = 'mohon maaf, whatsapp anda telah terdaftar di database kami \n\n'
+            pesan += 'anda akan mendapatkan informasi dari kami secara live, jika terjadi gempa bumi yang dapat di rasakan di seluruh wilayah indonesia'
+            client.sendMessage(data.user_id, {text:  pesan})
+        }
+    })
+
+}
+
+module.exports = {gempa_cronjob, kirim, daftar}

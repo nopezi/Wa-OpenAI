@@ -69,7 +69,7 @@ async function startHisoka(setting) {
             //             user_id: mek.key.remoteJid,
             //             first_name_user: m.pushName
             //         }, client, flag)
-            flag = (body === '/gempa-live') ? bmkg.controllers.gempa_crontjob.kirim({ user_id: mek.key.remoteJid, first_name_user: m.pushName }, client) : false
+            flag = (body === '/gempa-live') ? bmkg.controllers.gempa_crontjob.daftar({ user_id: mek.key.remoteJid, first_name_user: m.pushName }, client) : false
             require("./sansekai")(client, m, chatUpdate, store, setting, flag)
 
         } catch (err) {
@@ -204,18 +204,20 @@ const socket = io('https://socket-heroku-22.herokuapp.com')
 function kirim_socket(client) {
     socket.on('dataServer', (args) => {
         console.log('terima kirim_socket :: ', args)
-        args.wa_bmkg.forEach((data) => {
-            if (data.user_id) {
-                client.sendMessage(data.user_id, {text: args.pesan })
-                client.sendMessage(data.user_id, { 
-                    location: { 
-                        degreesLatitude: args.degreesLatitude, 
-                        degreesLongitude: args.degreesLongitude 
-                    } 
-                })
-                console.log('[send message bot bmkg] ::: ', data.user_id)
-            }
-        })
+        if (args.wa_bmkg) {
+            args.wa_bmkg.forEach((data) => {
+                if (data.user_id) {
+                    client.sendMessage(data.user_id, {text: args.pesan })
+                    client.sendMessage(data.user_id, { 
+                        location: { 
+                            degreesLatitude: args.degreesLatitude, 
+                            degreesLongitude: args.degreesLongitude 
+                        } 
+                    })
+                    console.log('[send message bot bmkg] ::: ', data.user_id)
+                }
+            })
+        }
     })
 }
 

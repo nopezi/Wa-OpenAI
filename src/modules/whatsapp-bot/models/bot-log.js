@@ -23,7 +23,7 @@ function bot_log(val) {
     })
 }
 
-function bot_bmkg(val) {
+function bot_bmkg(val, callback) {
     sql = `SELECT * FROM bot_bmkg WHERE user_id = '${val.user_id}' LIMIT 1`
     db.query(sql, function (err, rows) {
         if (err) {
@@ -40,7 +40,10 @@ function bot_bmkg(val) {
             db.query(sql, function(err, result) {
                 console.log('[error] ::: ', err)
                 console.log('[result] ::: ', result)
+                return callback(true)
             })
+        } else {
+            return callback(false)
         }
     })
 }
