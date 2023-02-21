@@ -9,7 +9,6 @@ function cek_gempa_realtime() {
     console.log('[Running setInterval every 5 second ...]')
     
     data_gempa.then(async (response) => {
-
         await models.gempa_terkini.cek_gempa_terkini2(response.data, async function(cek_kirim) {
             console.log('cek data ::: ', cek_kirim)
             await whatsapp.models.db_bot.get_bot_bmkg2('', function(wa_bmkg){

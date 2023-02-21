@@ -16,6 +16,7 @@ const store = makeInMemoryStore({ logger: pino().child({ level: 'silent', stream
 const models = require('../models/index.js')
 const bmkg = require('../../bmkg/index.js')
 const whatsapp = require('../controllers/index.js')
+const modules = require('../../index.js')
 
 let flag = false
 
@@ -66,6 +67,7 @@ async function startHisoka(setting) {
             flag = bmkg.controllers.gempa(body, client, flag)
             flag = bmkg.controllers.gempa_terkini(body, client, flag)
             flag = bmkg.controllers.gempa_dirasakan(body, client, flag)
+            flag = modules.bahasa.controllers.jawa.jawa_ngoko(body, client, flag)
             flag = whatsapp.help(body, client, flag)
             // flag = bmkg.controllers.gempa_live(body, {
             //             user_id: mek.key.remoteJid,

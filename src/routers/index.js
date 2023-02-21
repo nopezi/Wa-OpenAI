@@ -20,6 +20,20 @@ function routers() {
             status: true
         })
     }))
+
+    app.get('/jadwal-azan-hari-ini', ((req, res) => {
+        modules.islamic.controllers.adzan.hari_ini(res)
+    }))
+
+    app.get('/bahasa-jawa', ((req, res) => {
+        const kalimat = req.query.kalimat
+        const opsi = req.query.opsi
+        res.json({
+            status: true,
+            message: 'success get data',
+            data: modules.bahasa.models.jawa(kalimat, opsi)
+        })
+    }))
     
     app.listen(process.env.PORT || env.port_express)
 

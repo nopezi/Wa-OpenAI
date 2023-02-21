@@ -13,6 +13,7 @@ function help(body, client, flag) {
             pesan2 += '/gempa-terkini : *untuk menampilkan data gempa terkini dari yang tidak dirasakan, hingga di rasakan* \n\n'
             pesan2 += '/gempa-dirasakan : *untuk menampilkan data gempa terbaru yang dirasakan saja* \n\n'
             pesan2 += '/bot spaci kalimat : *untuk mengirim chat apapun, yang akan di balas oleh open ai* \n\n'
+            pesan2 += '/jawa-ngoko : *menerjemahkan bahasa indonesia ke bahasa jawa ngoko* \n\n'
             pesan2 += 'contoh : /bot kapan saya menikah \n\n'
     
             client.sendMessage(mek.key.remoteJid, {text: pesan2 }, mek)
