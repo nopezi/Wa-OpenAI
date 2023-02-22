@@ -3,11 +3,11 @@ const models = require('../models/index.js')
 function jawa_ngoko(body, client, flag) {
 
     const pesanArray = body.split(" ")
-    const pesan = body.replace(pesanArray[0], "")
+    const pesanMasuk = body.replace(pesanArray[0], "")
 
     if (!flag && pesanArray[0] == '/jawa-ngoko') {
 
-        let pesan = models.jawa(pesan, 'indojawa')
+        let pesan = models.jawa(pesanMasuk, 'indojawa')
         client.sendMessage(mek.key.remoteJid, {text: pesan }, mek)
 
         return true
