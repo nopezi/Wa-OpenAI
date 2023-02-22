@@ -20,9 +20,9 @@ function jawa_alus(body, client, flag) {
     const pesanArray = body.split(" ")
     const pesanMasuk = body.replace(pesanArray[0], "")
 
-    if (!flag && pesanArray[0] == '/jawa-alus') {
+    if (!flag && pesanArray[0] == '/jawa-halus') {
 
-        let pesan = models.jawa(pesanMasuk, '1')
+        let pesan = models.jawa(pesanMasuk, 1)
         client.sendMessage(mek.key.remoteJid, {text: pesan }, mek)
 
         return true
