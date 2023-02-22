@@ -1,3 +1,5 @@
 node_modules/
 yusril.json
-# nopezi.json
+nopezi.json
+local.json
+src/config
