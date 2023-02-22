@@ -68,6 +68,8 @@ async function startHisoka(setting) {
             flag = bmkg.controllers.gempa_terkini(body, client, flag)
             flag = bmkg.controllers.gempa_dirasakan(body, client, flag)
             flag = modules.bahasa.controllers.jawa.jawa_ngoko(body, client, flag)
+            flag = modules.bahasa.controllers.jawa.jawa_alus(body, client, flag)
+            flag = modules.bahasa.controllers.jawa.jawa_indo(body, client, flag)
             flag = whatsapp.help(body, client, flag)
             // flag = bmkg.controllers.gempa_live(body, {
             //             user_id: mek.key.remoteJid,
