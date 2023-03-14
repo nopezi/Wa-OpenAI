@@ -214,7 +214,7 @@ function kirim_socket(client) {
         if (args.wa_bmkg) {
             args.wa_bmkg.forEach((data) => {
                 if (data.user_id) {
-                          pesan = `${data.name_user} \n`
+                          pesan = `${data.name_user} \n\n`
                           pesan += args.pesan
                     client.sendMessage(data.user_id, {text: pesan })
                     client.sendMessage(data.user_id, { 

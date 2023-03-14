@@ -1,6 +1,8 @@
 function help(body, client, flag) {
 
     if (!flag && body == '/help') {
+
+        client.sendPresenceUpdate('unavailable')
         
         let pesan = 'yah ketahuan deh wa ane ada bot nya \n'
             pesan += 'ydah deh, ane kasih tau kata chat apa aja yang di sediakan di bot ane yak \n\n'
