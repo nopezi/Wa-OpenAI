@@ -210,10 +210,11 @@ const socket = io('https://socket-heroku-22.herokuapp.com')
 function kirim_socket(client) {
     socket.on('dataServer', (args) => {
         console.log('terima kirim_socket :: ', args)
+        let pesan = ''
         if (args.wa_bmkg) {
             args.wa_bmkg.forEach((data) => {
                 if (data.user_id) {
-                    const pesan = `${data.name_user} \n`
+                          pesan = `${data.name_user} \n`
                           pesan += args.pesan
                     client.sendMessage(data.user_id, {text: pesan })
                     client.sendMessage(data.user_id, { 
