@@ -213,7 +213,9 @@ function kirim_socket(client) {
         if (args.wa_bmkg) {
             args.wa_bmkg.forEach((data) => {
                 if (data.user_id) {
-                    client.sendMessage(data.user_id, {text: args.pesan })
+                    const pesan = `${data.name_user} \n`
+                          pesan += args.pesan
+                    client.sendMessage(data.user_id, {text: pesan })
                     client.sendMessage(data.user_id, { 
                         location: { 
                             degreesLatitude: args.degreesLatitude, 
@@ -224,6 +226,10 @@ function kirim_socket(client) {
                 }
             })
         }
+    })
+
+    socket.io('dariSocket', (args) => {
+
     })
 }
 

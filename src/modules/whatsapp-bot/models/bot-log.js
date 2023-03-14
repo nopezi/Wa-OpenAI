@@ -62,7 +62,7 @@ function get_bot_bmkg(val) {
 }
 
 function get_bot_bmkg2(val, callback) {
-    sql = `SELECT * FROM bot_bmkg ORDER BY id DESC`
+    sql = `SELECT * FROM bot_bmkg WHERE status = 1 ORDER BY id DESC`
     db.query(sql, function (err, rows) {
         if (err) {
             console.log('[get_bot_bmkg error] :>> ', err)
