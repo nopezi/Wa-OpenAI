@@ -228,10 +228,6 @@ function kirim_socket(client) {
             })
         }
     })
-
-    socket.io('dariSocket', (args) => {
-
-    })
 }
 
 module.exports = startHisoka
