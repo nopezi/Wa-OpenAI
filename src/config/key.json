@@ -3,6 +3,6 @@
 	"autoAI": true,
 	"donasi": "jangan lupa support ya bang :) https://saweria.co/sansekai",
 	"port": 8080,
-	"port_express": 5054,
+	"port_express": 80,
 	"sessionName": "coba"
 }
