@@ -1,4 +1,4 @@
-const { default: sansekaiConnect, useSingleFileAuthState, DisconnectReason, fetchLatestBaileysVersion, generateForwardMessageContent, prepareWAMessageMedia, generateWAMessageFromContent, generateMessageID, downloadContentFromMessage, makeInMemoryStore, jidDecode, proto, getContentType } = require("@adiwajshing/baileys")
+const { default: sansekaiConnect, useSingleFileAuthState, DisconnectReason, fetchLatestBaileysVersion, generateForwardMessageContent, prepareWAMessageMedia, generateWAMessageFromContent, generateMessageID, downloadContentFromMessage, makeInMemoryStore, jidDecode, proto, getContentType, Browsers } = require("@adiwajshing/baileys")
 const pino = require('pino')
 const figlet = require('figlet')
 
@@ -36,7 +36,8 @@ async function startHisoka(setting) {
     const client = sansekaiConnect({
         logger: pino({ level: 'silent' }),
         printQRInTerminal: true,
-        browser: ['Wa-OpenAI - Sansekai','Safari','3.0'],
+        // browser: ['Wa-OpenAI - Sansekai','Safari','3.0'],
+        browser: Browsers.macOS('Desktop'),
         auth: state
     })
 
@@ -151,10 +152,15 @@ async function startHisoka(setting) {
 
     client.serializeM = (m) => smsg(client, m, store)
     client.ev.on('connection.update', async (update) => {
-        const { connection, lastDisconnect } = update	    
+        
+        const { connection, lastDisconnect } = update
+        console.log('update :::', update)
+        console.log('connection', connection)
         if (connection === 'close') {
             console.log('cek DisconnectReason ', DisconnectReason)
+            console.log('setting', setting)
             let reason = new Boom(lastDisconnect?.error)?.output.statusCode
+            console.log('reason connection', reason)
             if (reason === DisconnectReason.badSession) { console.log(`Bad Session File, Please Delete Session and Scan Again`); process.exit(); }
             else if (reason === DisconnectReason.connectionClosed) { console.log("Connection closed, reconnecting...."); startHisoka(setting); } 
             else if (reason === DisconnectReason.connectionLost) { console.log("Connection Lost from Server, reconnecting..."); startHisoka(setting); }

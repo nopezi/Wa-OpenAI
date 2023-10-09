@@ -1,5 +1,6 @@
 const gempa = require('./gempa.js')
 const gempa_terkini = require('./gempaTerkini.js')
+const gempa_terkini_telegram = require('./gempaTerkiniTelegram.js')
 const gempa_dirasakan = require('./gempaDirasakan.js')
 const gempa_live = require('./gempaLive.js')
 const gempa_crontjob = require('./gempaCrontJob.js')
@@ -12,6 +13,7 @@ const controllers = {
     gempa_live,
     gempa_crontjob,
     gempa_realtime,
+    gempa_terkini_telegram,
 }
 
 module.exports = controllers

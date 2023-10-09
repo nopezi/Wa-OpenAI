@@ -3,11 +3,13 @@ const bmkg = require('./bmkg/index.js')
 const socket = require('./socket.io/index.js')
 const islamic = require('./islamic/index.js')
 const bahasa = require('./bahasa/index.js')
+const telegram = require('./telegram/index.js')
 
 module.exports = {
     whatsapp,
     bmkg,
     socket,
     islamic,
-    bahasa
+    bahasa,
+    telegram,
 }
