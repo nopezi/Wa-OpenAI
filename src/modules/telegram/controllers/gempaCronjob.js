@@ -9,15 +9,15 @@ function gempaCronJob() {
       response.data,
       async function (cek_kirim) {
         console.log("cek data ::: ", cek_kirim);
-        let pesan = "**Informasi Gempa Terkini dari** \n";
+        let pesan = "*Informasi Gempa Terkini dari* \n";
         pesan += "BMKG (Badan Meteorologi, Klimatologi, dan Geofisika) \n\n";
-        pesan += `**Tanggal** : ${response.data.Infogempa.gempa.Tanggal} \n`;
-        pesan += `**Pukul** : ${response.data.Infogempa.gempa.Jam} \n`;
-        pesan += `**Wilayah** : ${response.data.Infogempa.gempa.Wilayah} \n`;
-        pesan += `**Kedalaman** : ${response.data.Infogempa.gempa.Kedalaman} \n`;
-        pesan += `**Magnitude** : ${response.data.Infogempa.gempa.Magnitude} \n`;
-        pesan += `**Potensi** : ${response.data.Infogempa.gempa.Potensi} \n`;
-        pesan += `**Dirasakan** : ${response.data.Infogempa.gempa.Dirasakan} \n\n`;
+        pesan += `*Tanggal* : ${response.data.Infogempa.gempa.Tanggal} \n`;
+        pesan += `*Pukul* : ${response.data.Infogempa.gempa.Jam} \n`;
+        pesan += `*Wilayah* : ${response.data.Infogempa.gempa.Wilayah} \n`;
+        pesan += `*Kedalaman* : ${response.data.Infogempa.gempa.Kedalaman} \n`;
+        pesan += `*Magnitude* : ${response.data.Infogempa.gempa.Magnitude} \n`;
+        pesan += `*Potensi* : ${response.data.Infogempa.gempa.Potensi} \n`;
+        pesan += `*Dirasakan* : ${response.data.Infogempa.gempa.Dirasakan} \n\n`;
 
         pesan += `https://ews.bmkg.go.id/TEWS/data/${response.data.Infogempa.gempa.Shakemap} \n`;
         const coordinates =

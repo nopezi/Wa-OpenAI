@@ -7,8 +7,10 @@ function sendMessage(userId, body, other) {
     {
       chat_id: userId,
       text: body,
+      parse_mode: 'markdown'
     }
   );
+  // return axios.get(`https://api.telegram.org/bot736592923:AAEJ0_zq4SOI-y1BGEpKC9Mt0xAn_raif2s/sendMessage?chat_id=${userId}&text=${body}&parse_mode=markdown`);
 }
 
 function sendLocation(userId, body, other) {
